@@ -99,12 +99,23 @@ def evaluate_orchestrator(
             continue
 
         speed = float(row["speed"])
+        true_steer = float(row["steering_angle"])
+        true_throt = float(row["throttle"])
+
         prediction = orchestrator.predict(image, speed)
+
+        # Update per-agent performance history for adaptive dampening
+        for agent_pred in orchestrator._last_predictions:
+            steering_se = (agent_pred.steering - true_steer) ** 2
+            throttle_se = (agent_pred.throttle - true_throt) ** 2
+            orchestrator.update_performance(
+                agent_pred.agent_name, (steering_se + throttle_se) / 2
+            )
 
         pred_steerings.append(prediction.steering)
         pred_throttles.append(prediction.throttle)
-        true_steerings.append(float(row["steering_angle"]))
-        true_throttles.append(float(row["throttle"]))
+        true_steerings.append(true_steer)
+        true_throttles.append(true_throt)
 
     results["orchestrator"] = compute_all_metrics(
         np.array(pred_steerings),

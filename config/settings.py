@@ -49,3 +49,15 @@ STEERING_OVERSAMPLE_THRESHOLD = 0.1
 CONFIDENCE_TEMPERATURE = 1.0
 MIN_CONFIDENCE_THRESHOLD = 0.1
 SAFE_THROTTLE = 0.2
+
+# Outlier Detection (MAD-based)
+OUTLIER_MAD_THRESHOLD = 2.0       # Modified Z-score threshold to flag outliers
+OUTLIER_PENALTY = 0.05            # Multiply outlier's confidence by this
+
+# Robust Aggregation
+USE_WEIGHTED_MEDIAN = True        # Use weighted median instead of weighted mean
+
+# Performance Dampening (continuous exponential decay)
+PERFORMANCE_DECAY_ALPHA = 5.0     # exp(-alpha * mse) dampening rate
+PERFORMANCE_HISTORY_WINDOW = 20   # Reduced from 50 for faster adaptation
+PERFORMANCE_EMA_GAMMA = 0.1       # EMA smoothing for recent MSE tracking
